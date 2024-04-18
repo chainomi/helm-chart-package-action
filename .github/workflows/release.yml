@@ -23,6 +23,15 @@ jobs:
           git config user.name "USER_NAME"
           git config user.email "USER_NAME@users.noreply.github.com"
 
+      - name: Create gh-pages branch if it doesn't exist
+        continue-on-error: true
+        run: |
+          git checkout -b gh-pages || exit 1
+          git rebase main
+          git push origin gh-pages
+
+          git checkout main
+          
       - name: Install Helm
         uses: azure/setup-helm@v3
 
