@@ -2,8 +2,9 @@ name: Release Charts
 
 on:
   push:
-    branches:
-      - main
+    tags: '*'
+    # branches:
+    #   - main
 
 jobs:
   release:
@@ -23,14 +24,14 @@ jobs:
           git config user.name "USER_NAME"
           git config user.email "USER_NAME@users.noreply.github.com"
 
-      - name: Create gh-pages branch if it doesn't exist
-        continue-on-error: true
-        run: |
-          git checkout -b gh-pages || exit 1
-          git rebase main
-          git push origin gh-pages
+      # - name: Create gh-pages branch if it doesn't exist
+      #   continue-on-error: true
+      #   run: |
+      #     git checkout -b gh-pages || exit 1
+      #     git rebase main
+      #     git push origin gh-pages
 
-          git checkout main
+      #     git checkout main
           
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -39,7 +40,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: flask-api-chart
-          # pages_branch: main
+          pages_branch: main
           # config: cr.yaml        
         env:
           CR_TOKEN: "${{ secrets.GH_TOKEN }}"
