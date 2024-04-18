@@ -1,0 +1,33 @@
+name: Bucket push
+
+on:
+  push:
+    # tags: '*'
+    branches:
+      - main
+
+jobs:
+  bucket-push:
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - id: auth
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
+          service_account: "${{ secrets.SERVICE_ACCOUNT }}"
+
+      - id: 'upload-folder'
+        uses: 'google-github-actions/upload-cloud-storage@v2'
+        with:
+          path: 'flask-api-chart'
+          destination: 'helm-charts-push-2024'
+
