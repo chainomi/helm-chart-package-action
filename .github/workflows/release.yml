@@ -2,9 +2,9 @@ name: Release Charts
 
 on:
   push:
-    tags: '*'
-    # branches:
-    #   - main
+    # tags: '*'
+    branches:
+      - main
 
 jobs:
   release:
