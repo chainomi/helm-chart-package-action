@@ -6,7 +6,7 @@ image:
   tag: "latest"
 
 nameOverride: ""
-fullnameOverride: "flask-api"
+fullnameOverride: "flask-api-1"
 
 serviceAccount:
   create: true
