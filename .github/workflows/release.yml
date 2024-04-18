@@ -40,7 +40,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: flask-api-chart
-          pages_branch: main
+          # pages_branch: main
           # config: cr.yaml        
         env:
           CR_TOKEN: "${{ secrets.GH_TOKEN }}"

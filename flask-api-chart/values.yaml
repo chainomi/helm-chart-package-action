@@ -20,7 +20,7 @@ serviceAccountRole:
     verbs: ["get", "watch", "list"]
 
 podAnnotations: 
-  name: flask-api
+  name: flask-api-1
 
 podSecurityContext: {}
 
