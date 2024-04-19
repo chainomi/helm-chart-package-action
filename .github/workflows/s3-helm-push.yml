@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  charts_folder: 'helm-charts'
+
 jobs:
   bucket-push:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
@@ -19,6 +22,38 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: '3.x'
+
+      - name: Detect Changes in Charts
+        id: changed
+        run: |
+          # Get list of changed directories in 'charts'
+          CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^$charts_folder/' | awk -F/ '{print $2}' | uniq)
+          if [ -z "$CHANGED_DIRS" ]; then
+            echo "No changes in charts directory"
+            echo "::set-output name=changed::false"
+          else
+            echo "Changed directories: $CHANGED_DIRS"
+            echo "::set-output name=changed::true"
+            echo "::set-output name=dirs::$CHANGED_DIRS"
+          fi
+
+      - name: Package Changed Charts
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          CHANGED_DIRS="${{ steps.changed.outputs.dirs }}"
+          for dir in $CHANGED_DIRS; do
+            if [ -d "$charts_folder/$dir" ]; then
+              echo "Packaging chart in $dir"
+              helm package "$charts_folder/$dir"
+            else
+              echo "$dir is not a directory, skipping"
+            fi
+          done
+
       - id: auth
         uses: google-github-actions/auth@v0.4.0
         with:
@@ -26,9 +61,10 @@ jobs:
           # workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
           # service_account: "${{ secrets.SERVICE_ACCOUNT }}"
 
-      - id: 'upload-folder'
+      - id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: 'helm-charts/flask-api-chart'
+          path: './'
           destination: 'helm-charts-push-2024'
+          glob: '**/*.tgz'
 
