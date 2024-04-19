@@ -51,9 +51,9 @@ jobs:
               
               CHANGED_DIRS="${{ steps.changed.outputs.dirs }}"
               for dir in $CHANGED_DIRS; do
-                if [ -d "$charts_folder/$dir" ]; then
+                if [ -d "$dir" ]; then
                   echo "Packaging chart in $dir"
-                  helm package "$charts_folder/$dir"
+                  helm package "$dir"
                 else
                   echo "$dir is not a directory, skipping"
                 fi
