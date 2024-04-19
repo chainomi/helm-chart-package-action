@@ -29,6 +29,6 @@ jobs:
       - id: 'upload-folder'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: 'charts/flask-api-chart'
+          path: 'helm-charts/flask-api-chart'
           destination: 'helm-charts-push-2024'
 
