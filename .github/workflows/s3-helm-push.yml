@@ -30,29 +30,33 @@ jobs:
       - name: Detect Changes in Charts
         id: changed
         run: |
-          # Get list of changed directories in 'charts'
-          CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^$charts_folder/' | awk -F/ '{print $2}' | uniq)
-          if [ -z "$CHANGED_DIRS" ]; then
-            echo "No changes in charts directory"
-            echo "::set-output name=changed::false"
-          else
-            echo "Changed directories: $CHANGED_DIRS"
-            echo "::set-output name=changed::true"
-            echo "::set-output name=dirs::$CHANGED_DIRS"
-          fi
+              set -xe
+
+              # Get list of changed directories in 'charts'
+              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^$charts_folder/' | awk -F/ '{print $2}' | uniq)
+              if [ -z "$CHANGED_DIRS" ]; then
+                echo "No changes in charts directory"
+                echo "::set-output name=changed::false"
+              else
+                echo "Changed directories: $CHANGED_DIRS"
+                echo "::set-output name=changed::true"
+                echo "::set-output name=dirs::$CHANGED_DIRS"
+              fi
 
       - name: Package Changed Charts
         if: steps.changed.outputs.changed == 'true'
         run: |
-          CHANGED_DIRS="${{ steps.changed.outputs.dirs }}"
-          for dir in $CHANGED_DIRS; do
-            if [ -d "$charts_folder/$dir" ]; then
-              echo "Packaging chart in $dir"
-              helm package "$charts_folder/$dir"
-            else
-              echo "$dir is not a directory, skipping"
-            fi
-          done
+              set -xe
+              
+              CHANGED_DIRS="${{ steps.changed.outputs.dirs }}"
+              for dir in $CHANGED_DIRS; do
+                if [ -d "$charts_folder/$dir" ]; then
+                  echo "Packaging chart in $dir"
+                  helm package "$charts_folder/$dir"
+                else
+                  echo "$dir is not a directory, skipping"
+                fi
+              done
 
       - id: auth
         uses: google-github-actions/auth@v0.4.0
