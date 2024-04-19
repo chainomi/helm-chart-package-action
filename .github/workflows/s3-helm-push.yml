@@ -33,7 +33,7 @@ jobs:
               set -xe
 
               # Get list of changed directories in 'charts'
-              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^$charts_folder/' | awk -F/ '{print $2}' | uniq)
+              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^'$charts_folder'/' | awk -F/ '{print $2}' | uniq)
               if [ -z "$CHANGED_DIRS" ]; then
                 echo "No changes in charts directory"
                 echo "::set-output name=changed::false"
