@@ -37,11 +37,15 @@ jobs:
               CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- helm-charts/ | xargs dirname | sort | uniq)              
               if [ -z "$CHANGED_DIRS" ]; then
                 echo "No changes in charts directory"
-                echo "::set-output name=changed::false"
+                # echo "::set-output name=changed::false"
+                echo "changed=false" >> "$GITHUB_OUTPUT"
               else
                 echo "Changed directories: $CHANGED_DIRS"
-                echo "::set-output name=changed::true"
-                echo "::set-output name=dirs::$CHANGED_DIRS"
+                # echo "::set-output name=changed::true"
+                # echo "::set-output name=dirs::$CHANGED_DIRS"
+
+                echo "changed=true" >> "$GITHUB_OUTPUT"
+                echo "dirs=$CHANGED_DIRS" >> "$GITHUB_OUTPUT"
               fi
 
       - name: Package Changed Charts
