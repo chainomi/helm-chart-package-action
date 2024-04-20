@@ -34,7 +34,9 @@ jobs:
 
               # Get list of changed directories in 'charts'
               # CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^'$charts_folder'/' | awk -F/ '{print $2}' | uniq)
-              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- helm-charts/ | xargs dirname | sort | uniq)              
+              
+              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- helm-charts/ | xargs dirname | sort | uniq)
+                          
               if [ -z "$CHANGED_DIRS" ]; then
                 echo "No changes in charts directory"
                 # echo "::set-output name=changed::false"
@@ -45,7 +47,12 @@ jobs:
                 # echo "::set-output name=dirs::$CHANGED_DIRS"
 
                 echo "changed=true" >> "$GITHUB_OUTPUT"
-                echo "dirs=$CHANGED_DIRS" >> "$GITHUB_OUTPUT"
+                
+                echo "CHANGED_DIRS_ENV_VAR<<EOF" >> $GITHUB_ENV
+                echo $CHANGED_DIRS >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
+                # echo "dirs=$CHANGED_DIRS" >> "$GITHUB_OUTPUT"
               fi
 
       - name: Package Changed Charts
@@ -53,7 +60,7 @@ jobs:
         run: |
               set -xe
               
-              CHANGED_DIRS="${{ steps.changed.outputs.dirs }}"
+              CHANGED_DIRS="${{ env.CHANGED_DIRS_ENV_VAR }}"
               for dir in $CHANGED_DIRS; do
                 if [ -d "$dir" ]; then
                   echo "Packaging chart in $dir"
