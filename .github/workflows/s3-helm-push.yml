@@ -80,6 +80,7 @@ jobs:
         with:
           path: '${{ env.charts_upload_folder }}'
           destination: 'helm-charts-push-2024'
+          # setting parent to false ommits the parent folder specified on the path variable
           parent: false
           glob: '**/*.tgz'
 

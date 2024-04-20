@@ -17,7 +17,7 @@ serviceAccountRole:
   rules:
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get", "watch", "list"]
+    verbs: ["get", "list"]
 
 podAnnotations: 
   name: flask-api-1
