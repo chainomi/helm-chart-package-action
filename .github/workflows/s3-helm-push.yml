@@ -62,7 +62,7 @@ jobs:
                 if [ -d "$dir" ]; then
                   echo "Packaging chart in $dir"
                   #packaging chart to destination for upload e.g. $chart-upload-folder/<chart folder name>
-                  helm package "$dir" --destination $chart-upload-folder/$(echo $dir | awk -F'/' '{print $2}')
+                  helm package "$dir" --destination ${{ env.charts_upload_folder }}/$(echo $dir | awk -F'/' '{print $2}')
                 else
                   echo "$dir is not a directory, skipping"
                 fi
