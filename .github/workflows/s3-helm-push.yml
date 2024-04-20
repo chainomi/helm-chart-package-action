@@ -78,7 +78,8 @@ jobs:
       - id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: '${{ env.charts_upload_folder }}/**'
+          path: '${{ env.charts_upload_folder }}'
           destination: 'helm-charts-push-2024'
+          parent: false
           glob: '**/*.tgz'
 
