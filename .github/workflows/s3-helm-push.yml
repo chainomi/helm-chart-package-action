@@ -34,7 +34,6 @@ jobs:
               set -xe
 
               # Get list of changed directories in 'charts'
-              
               CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- $charts_folder/ | xargs dirname | sort | uniq)
                           
               if [ -z "$CHANGED_DIRS" ]; then
@@ -62,7 +61,8 @@ jobs:
                 if [ -d "$dir" ]; then
                   echo "Packaging chart in $dir"
                   #packaging chart to destination for upload e.g. $chart-upload-folder/<chart folder name>
-                  helm package "$dir" --destination ${{ env.charts_upload_folder }}/$(echo $dir | awk -F'/' '{print $2}')
+                  # helm package "$dir" --destination ${{ env.charts_upload_folder }}/$(echo $dir | awk -F'/' '{print $2}')
+                  helm package "$dir" --destination "$dir"               
                 else
                   echo "$dir is not a directory, skipping"
                 fi
