@@ -1,19 +1,17 @@
-name: Bucket push
+name: Helm package and bucket push
 
 on:
   push:
-    # tags: '*'
+    # run when commits are made to the main or specfed branch 
     branches:
       - main
 
 env:
   charts_folder: 'helm-charts'
-  # charts_upload_folder: 'chart-upload'
+  cloud_storage_bucket: 'helm-charts-push-2024'
 
 jobs:
   bucket-push:
-    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
-    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -33,7 +31,7 @@ jobs:
         run: |
               set -xe
 
-              # Get list of changed directories in 'charts'
+              # Get list of changed directories in 'charts' using git diff between current and previous sha
               CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- $charts_folder/ | xargs dirname | sort | uniq)
                           
               if [ -z "$CHANGED_DIRS" ]; then
@@ -68,18 +66,20 @@ jobs:
                 fi
               done
 
-      - id: auth
+      - name: Google authentication for bucket push
         uses: google-github-actions/auth@v0.4.0
+        if: steps.changed.outputs.changed == 'true'
         with:
           credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"       
           # workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
           # service_account: "${{ secrets.SERVICE_ACCOUNT }}"
 
-      - id: 'upload-file'
+      - name: Cloud storage bucket push
         uses: 'google-github-actions/upload-cloud-storage@v2'
+        if: steps.changed.outputs.changed == 'true'
         with:
           path: '${{ env.charts_folder }}'
-          destination: 'helm-charts-push-2024'
+          destination: '${{ env.cloud_storage_bucket }}' 
           # setting parent to false ommits the parent folder specified on the path variable
           parent: false
           glob: '**/*.tgz'
