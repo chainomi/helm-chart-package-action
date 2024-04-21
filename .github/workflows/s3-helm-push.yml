@@ -16,7 +16,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -26,7 +26,7 @@ jobs:
         with:
           version: '3.5.0'
 
-      - name: Detect Changes in Charts
+      - name: Detect changes in helm chart directories
         id: changed
         run: |
               set -xe
@@ -49,7 +49,7 @@ jobs:
 
               fi
 
-      - name: Package Changed Charts
+      - name: Package changed helm charts
         if: steps.changed.outputs.changed == 'true'
         run: |
               set -xe
