@@ -8,7 +8,7 @@ on:
 
 env:
   charts_folder: 'helm-charts'
-  charts_upload_folder: 'chart-upload'
+  # charts_upload_folder: 'chart-upload'
 
 jobs:
   bucket-push:
@@ -78,7 +78,7 @@ jobs:
       - id: 'upload-file'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
-          path: '${{ env.charts_upload_folder }}'
+          path: '${{ env.charts_folder }}'
           destination: 'helm-charts-push-2024'
           # setting parent to false ommits the parent folder specified on the path variable
           parent: false
