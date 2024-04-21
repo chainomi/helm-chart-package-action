@@ -1,4 +1,4 @@
-name: Helm package and bucket push
+name: Helm chart package and bucket push
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
   cloud_storage_bucket: 'helm-charts-push-2024'
 
 jobs:
-  bucket-push:
+  helm-chart-bucket-push:
     permissions:
       contents: write
     runs-on: ubuntu-latest
