@@ -41,3 +41,10 @@ gcloud iam service-accounts add-iam-policy-binding "terraform-52@useful-circle-3
 --project="useful-circle-358120" \
 --role="roles/iam.workloadIdentityUser" \
 --member="principalSet://iam.googleapis.com/projects/976036132338/locations/global/workloadIdentityPools/git-hub-pool-1/attribute.repository/chainomi/helm-chart-package-action"
+
+
+gcloud iam workload-identity-pools providers describe "github-provider-1" \
+  --project="useful-circle-358120" \
+  --location="global" \
+  --workload-identity-pool="git-hub-pool-1" \
+  --format="value(name)"
