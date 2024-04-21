@@ -13,7 +13,9 @@ env:
 jobs:
   helm-chart-bucket-push:
     permissions:
-      contents: write
+      contents: 'read'
+      id-token: 'write'
+      
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
