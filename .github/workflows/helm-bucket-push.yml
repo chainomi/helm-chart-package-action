@@ -32,10 +32,13 @@ jobs:
         id: changed
         run: |
               set -xe
-
+              set -xe
               # Get list of changed directories in 'charts' using git diff between current and previous sha
-              CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- $charts_folder/ | xargs dirname | sort | uniq)
-                          
+              ALL_CHANGED_DIRS=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} -- $charts_folder/ | xargs dirname | sort | uniq)
+              
+              # filtering to parent directory of helm charts
+              CHANGED_DIRS=$(echo $ALL_CHANGED_DIRS | awk -F '/' '{print $1 "/" $2}' | uniq )
+
               if [ -z "$CHANGED_DIRS" ]; then
                 echo "No changes in charts directory"
                 echo "changed=false" >> "$GITHUB_OUTPUT"

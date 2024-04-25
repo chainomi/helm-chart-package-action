@@ -22,5 +22,6 @@
 4. 
 
 
+git diff --name-only f218747 711d826 -- helm-charts/ | xargs dirname | sort | uniq
 
 
